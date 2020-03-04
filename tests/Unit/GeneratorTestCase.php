@@ -4,6 +4,7 @@
 
 namespace Mpociot\ApiDoc\Tests\Unit;
 
+use DMS\PHPUnitExtensions\ArraySubset\ArraySubsetAsserts;
 use Illuminate\Support\Arr;
 use Mpociot\ApiDoc\ApiDocGeneratorServiceProvider;
 use Mpociot\ApiDoc\Extracting\Generator;
@@ -14,6 +15,8 @@ use Orchestra\Testbench\TestCase;
 
 abstract class GeneratorTestCase extends TestCase
 {
+    use ArraySubsetAsserts;
+
     /**
      * @var \Mpociot\ApiDoc\Extracting\Generator
      */
@@ -469,21 +472,21 @@ abstract class GeneratorTestCase extends TestCase
         $content = json_decode($response['content'], true);
         $this->assertIsArray($content);
         $this->assertArraySubset([
-                'data' => [
-                    [
-                        'id' => 4,
-                        'name' => 'Tested Again',
-                        'email' => 'a@b.com',
-                    ],
-                    [
-                        'id' => 4,
-                        'name' => 'Tested Again',
-                        'email' => 'a@b.com',
-                    ],
+            'data' => [
+                [
+                    'id' => 4,
+                    'name' => 'Tested Again',
+                    'email' => 'a@b.com',
                 ],
-                'links' => [
-                    'self' => 'link-value',
+                [
+                    'id' => 4,
+                    'name' => 'Tested Again',
+                    'email' => 'a@b.com',
                 ],
+            ],
+            'links' => [
+                'self' => 'link-value',
+            ],
         ], $content);
     }
 

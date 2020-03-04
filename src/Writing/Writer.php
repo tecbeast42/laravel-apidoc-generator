@@ -223,7 +223,11 @@ class Writer
      */
     public function generatePostmanCollection(Collection $routes)
     {
-        $writer = new PostmanCollectionWriter($routes, $this->baseUrl);
+        /** @var PostmanCollectionWriter $writer */
+        $writer = app()->makeWith(
+            PostmanCollectionWriter::class,
+            ['routeGroups' => $routes, 'baseUrl' => $this->baseUrl]
+        );
 
         return $writer->getCollection();
     }
@@ -259,9 +263,7 @@ class Writer
         rcopy("{$this->sourceOutputPath}/css", "{$publicPath}/css");
 
         if ($logo = $this->config->get('logo')) {
-            if ($this->isStatic) {
-                copy($logo, "{$publicPath}/images/logo.png");
-            }
+            copy($logo, "{$publicPath}/images/logo.png");
         }
     }
 
@@ -281,7 +283,7 @@ class Writer
             $contents = str_replace('href="css/style.css"', 'href="/docs/css/style.css"', $contents);
             $contents = str_replace('src="js/all.js"', 'src="/docs/js/all.js"', $contents);
             $contents = str_replace('src="images/', 'src="/docs/images/', $contents);
-            $contents = preg_replace('#href="http://.+?/docs/collection.json"#', 'href="{{ route("apidoc", ["format" => ".json"]) }}"', $contents);
+            $contents = preg_replace('#href="https?://.+?/docs/collection.json"#', 'href="{{ route("apidoc", ["format" => ".json"]) }}"', $contents);
             file_put_contents("$this->outputPath/index.blade.php", $contents);
         }
     }
